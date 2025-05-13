@@ -1,10 +1,12 @@
-use std::error::Error;
 use reqwest;
 use serde_json::Value;
+use std::error::Error;
 
 #[tokio::main]
 async fn main() {
-    fetch_repo_names().await.expect("Failed to fetch GitLab repos");
+    fetch_repo_names()
+        .await
+        .expect("Failed to fetch GitLab repos");
 }
 
 async fn fetch_repo_names() -> Result<(), Box<dyn Error>> {
@@ -19,7 +21,7 @@ async fn fetch_repo_names() -> Result<(), Box<dyn Error>> {
     // Pretty print the JSON
     let pretty = serde_json::to_string_pretty(&v)?;
     let v: Value = serde_json::from_str(&*body)?;
-    
+
     for i in v.as_array().unwrap() {
         println!("repo Name: {:?}", i["path"].as_str().unwrap());
     }
