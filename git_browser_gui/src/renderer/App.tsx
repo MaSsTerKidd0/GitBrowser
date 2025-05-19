@@ -1,5 +1,4 @@
 import './App.css';
-import GuessTheNumber from './components/GuessTheNumber';
 import useServerEventHandlers from './hooks/serverEventHandlers.hook';
 import {
   UserActionHandlers,
@@ -11,7 +10,7 @@ export default function App() {
   useServerEventHandlers();
   return (
     <div className="body-container">
-      <GuessTheNumber userActionHandlers={userActionHandlers} />
+      
     </div>
   );
 }
