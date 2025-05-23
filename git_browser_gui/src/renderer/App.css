@@ -1,13 +1,75 @@
-body {
-  margin: 0;
-  overflow: auto;
+/* App.css */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.body-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh; /* Ensure it takes up the full viewport height */
-  background-color: #e9ecef; /* Optional: Set a background color for better visibility */
-  margin: 0; /* Remove default margin */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* ← optional: hide any accidental overflow */
+}
+
+.container {
+  display: grid;
+  height: 100vh; /* full viewport height */
+  gap: 8px; /* gutter between panels */
+  padding: 8px;
+  overflow: hidden;
+
+  /* 2 columns: 200px sidebar + flexible content */
+  grid-template-columns: 200px 1fr;
+
+  /* 4 rows: auto-height for upper & secondary,
+     flex-grow main area, auto-height for bottom bar */
+  grid-template-rows:
+    auto /* upper panel */
+    auto /* secondary panel */
+    1fr /* main / large panel */
+    auto; /* bottom panel */
+
+  grid-template-areas:
+    'sidebar upper'
+    'sidebar secondary'
+    'sidebar main'
+    'sidebar bottom';
+}
+
+.sidebar {
+  grid-area: sidebar;
+  border: 2px solid #00aaff;
+  background: #f0f8ff;
+}
+
+.upper {
+  grid-area: upper;
+  border: 2px solid #00aaff;
+  background: #e6f7ff;
+  padding: 8px;
+}
+
+.secondary {
+  grid-area: secondary;
+  border: 2px solid #00aaff;
+  background: #d0efff;
+  padding: 8px;
+}
+
+.main {
+  grid-area: main;
+  border: 2px solid #00aaff;
+  background: #ffffff;
+  padding: 8px;
+  overflow: auto; /* scroll if content overflows */
+}
+
+.bottom {
+  grid-area: bottom;
+  border: 2px solid #00aaff;
+  background: #e6f7ff;
+  padding: 8px;
 }

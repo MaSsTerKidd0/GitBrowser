@@ -1,0 +1,56 @@
+/* RepoCardList.module.css */
+
+.repo_lib {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5%;
+}
+
+/* 2) Each card container */
+.repo_card_container {
+  background-color: white;
+  border: 1px solid orange;
+  border-radius: 25%;
+  box-sizing: border-box; /* include padding/border in width calculations */
+
+  /* Responsive width:
+     - On large screens, ~4 cards per row
+     - On medium, ~2 cards per row
+     - On small, full-width cards
+  */
+  flex: 1 1 calc(25% - 2.5%); /* base width ≈25% minus the gap */
+  min-height: 200px;
+  max-height: 400px;
+  min-width: 150px; /* prevent cards from getting too skinny */
+  max-width: 250px; /* optional: cap maximum size */
+  margin-bottom: 1rem; /* vertical spacing when they wrap */
+  padding: 0.5rem;
+}
+
+/* 3) Card title inside */
+.repo_title {
+  padding: 10px; /* added missing unit */
+  word-break: break-word; /* prevent overflow on long names */
+  text-align: center;
+}
+
+/* 4) Tweak breakpoints */
+@media (max-width: 1024px) {
+  .repo_card_container {
+    flex: 1 1 calc(33.33% - 2.5%);
+  }
+}
+
+@media (max-width: 768px) {
+  .repo_card_container {
+    flex: 1 1 calc(50% - 2.5%);
+  }
+}
+
+@media (max-width: 480px) {
+  .repo_card_container {
+    flex: 1 1 100%;
+  }
+}
