@@ -1,25 +1,52 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
 import invokeServer from '../IPC/InvokeServer';
+import {
+  CloneRepositoryResponse,
+  GithubCommit,
+  UserRepositoriesResponse,
+} from '../../shared/Types/GitBrowser.types';
 
 export type UserActionHandlers = {
-  handleGenerateNumber: () => void;
-  handleCheckGuess: (guessedNumber: number) => any;
+  fetchUserRepositories: (
+    username: string,
+    token?: string
+  ) => Promise<UserRepositoriesResponse>;
+  fetchPersonalRepositories: (token: string) => Promise<UserRepositoriesResponse>;
+  fetchRepositoryCommits: (
+    owner: string,
+    repo: string,
+    token?: string
+  ) => Promise<GithubCommit[]>;
+  cloneRepository: (
+    cloneUrl: string,
+    repositoryName: string
+  ) => Promise<CloneRepositoryResponse>;
 };
 
 export const useUserActionHandlers = (): UserActionHandlers => {
-  const handleGenerateNumber = async () => {
-    await invokeServer('generate-number', null);
+  const fetchUserRepositories = async (username: string, token?: string) => {
+    return invokeServer('github-user-repositories', { username, token });
   };
 
-  const handleCheckGuess = async (guessedNumber: number) => {
-    const hint = await invokeServer('check-guess', guessedNumber);
-    return hint;
+  const fetchPersonalRepositories = async (token: string) => {
+    return invokeServer('github-personal-repositories', { token });
+  };
+
+  const fetchRepositoryCommits = async (
+    owner: string,
+    repo: string,
+    token?: string
+  ) => {
+    return invokeServer('github-repo-commits', { owner, repo, token });
+  };
+
+  const cloneRepository = async (cloneUrl: string, repositoryName: string) => {
+    return invokeServer('clone-repository', { cloneUrl, repositoryName });
   };
 
   return {
-    handleGenerateNumber,
-    handleCheckGuess,
+    fetchUserRepositories,
+    fetchPersonalRepositories,
+    fetchRepositoryCommits,
+    cloneRepository,
   };
 };
