@@ -1,16 +1,30 @@
-/* eslint-disable prettier/prettier */
-export type UserResponse = {
-  response: boolean;
-};
+import {
+  CloneRepositoryRequest,
+  CloneRepositoryResponse,
+  GithubCommit,
+  UserLookupRequest,
+  UserRepositoriesResponse,
+} from '../../Types/GitBrowser.types';
 
 export interface IPCMethods {
-  'generate-number': {
-    request: null;
-    response: null;
+  'github-user-repositories': {
+    request: UserLookupRequest;
+    response: UserRepositoriesResponse;
   };
-
-  'check-guess': {
-    request: number;
-    response: string;
+  'github-personal-repositories': {
+    request: { token: string };
+    response: UserRepositoriesResponse;
+  };
+  'github-repo-commits': {
+    request: {
+      owner: string;
+      repo: string;
+      token?: string;
+    };
+    response: GithubCommit[];
+  };
+  'clone-repository': {
+    request: CloneRepositoryRequest;
+    response: CloneRepositoryResponse;
   };
 }

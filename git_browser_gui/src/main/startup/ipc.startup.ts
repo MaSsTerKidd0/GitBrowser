@@ -4,10 +4,7 @@ import registerEvent from '../IPC/RegisterEvent';
 import { ErrorMessage } from '../../shared/Types/ErrorMessage';
 import createStackTraceFromException from '../../shared/utils/StackTrace.utils';
 
-// Uses for registering ipc events (client requests) with a functions.
-
 export default function setIpcRoutes(
-  // eslint-disable-next-line no-undef
   ipcMain: Electron.IpcMain,
   browserWindow: BrowserWindow
 ) {
@@ -16,20 +13,18 @@ export default function setIpcRoutes(
   ): Promise<T | null> {
     try {
       return action();
-    } catch (ex: any) {
-      // eslint-disable-next-line camelcase
-      const err_msg: ErrorMessage = {
+    } catch (exception: any) {
+      const errorMessage: ErrorMessage = {
         stringMessage: `Error from server: ${createStackTraceFromException(
-          ex
+          exception
         )}`,
       };
       try {
-        ClientEventHandlers.handleErrorMessage(browserWindow, err_msg);
-      } catch (exc: any) {
+        ClientEventHandlers.handleErrorMessage(browserWindow, errorMessage);
+      } catch (nestedException: any) {
         console.log(
-          // eslint-disable-next-line prettier/prettier
           `Exception while handling exception. ${createStackTraceFromException(
-            exc
+            nestedException
           )}`
         );
       }
@@ -37,14 +32,61 @@ export default function setIpcRoutes(
     }
   }
 
-  registerEvent('generate-number', ipcMain, async () => {
-    await forwardErrorsToClient(async () =>
-      ClientEventHandlers.handleGenerateNumber()
+  registerEvent('github-user-repositories', ipcMain, async (payload) => {
+    const response = await forwardErrorsToClient(async () =>
+      ClientEventHandlers.handleGithubUserRepositories(
+        payload.username,
+        payload.token
+      )
     );
-    return null;
+
+    if (!response) {
+      throw new Error('Unable to fetch user repositories.');
+    }
+
+    return response;
   });
 
-  registerEvent('check-guess', ipcMain, async (param: number) => {
-    return ClientEventHandlers.handleCheckGuess(param);
+  registerEvent('github-personal-repositories', ipcMain, async (payload) => {
+    const response = await forwardErrorsToClient(async () =>
+      ClientEventHandlers.handleGithubPersonalRepositories(payload.token)
+    );
+
+    if (!response) {
+      throw new Error('Unable to fetch personal repositories.');
+    }
+
+    return response;
+  });
+
+  registerEvent('github-repo-commits', ipcMain, async (payload) => {
+    const response = await forwardErrorsToClient(async () =>
+      ClientEventHandlers.handleGithubRepoCommits(
+        payload.owner,
+        payload.repo,
+        payload.token
+      )
+    );
+
+    if (!response) {
+      throw new Error('Unable to fetch repository commits.');
+    }
+
+    return response;
+  });
+
+  registerEvent('clone-repository', ipcMain, async (payload) => {
+    const response = await forwardErrorsToClient(async () =>
+      ClientEventHandlers.handleCloneRepository(
+        payload.cloneUrl,
+        payload.repositoryName
+      )
+    );
+
+    if (!response) {
+      throw new Error('Unable to clone repository.');
+    }
+
+    return response;
   });
 }
